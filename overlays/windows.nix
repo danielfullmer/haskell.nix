@@ -20,9 +20,10 @@ final: prev:
      configureFlags = (drv.configureFlags or []) ++ prev.lib.optional prev.stdenv.hostPlatform.isWindows "--enable-static --disable-shared" ;
    });
 } // {
-   libmpc = prev.libmpc.overrideAttrs (drv: {
-     configureFlags = (drv.configureFlags or []) ++ prev.lib.optional prev.stdenv.hostPlatform.isWindows "--enable-static --disable-shared" ;
-   });
+   # Work around breaking cached stdenv. See: https://github.com/NixOS/nixpkgs/issues/136903
+   #libmpc = prev.libmpc.overrideAttrs (drv: {
+   #  configureFlags = (drv.configureFlags or []) ++ prev.lib.optional prev.stdenv.hostPlatform.isWindows "--enable-static --disable-shared" ;
+   #});
 
    binutils-unwrapped = prev.binutils-unwrapped.overrideAttrs (attrs: {
      patches = attrs.patches ++ final.lib.optional (final.stdenv.targetPlatform.isWindows && attrs.version or "" == "2.31.1") (
